@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@{} : URL표현식</title>
+</head>
+<body>
+<div><a href="/a/b/c"></a></div>
+<div><a th:href="@{/a/b/c}"></a></div>
+<div th:with="v1='product1', v2='product2'">
+  <!--/a/product1/c  -->
+  <a th:href="@{/a/{b}/c(b=${v1})}">case1</a>
+  <!--/a/product1/product2  -->
+  <a th:href="@{/a/{b}/{c}(b=${v1},c=${v2})}">case2</a>
+  <!--/a/product1/product2/z?d=product1&e=product2 -->
+  <a th:href="@{/a/{b}/{c}/z(b=${v1},c=${v2},d=${v1},e=${v2})}">case3</a>
+</div>
+</body>
+</html>

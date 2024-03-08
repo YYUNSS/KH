@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="#{title.member.join}"></title>
+</head>
+<body>
+  <h3>회원가입</h3>
+  <form id='frm' action="/members/join" method="POST">
+    <p>
+      <input type="text" name="email" id="email" placeholder="이메일">
+      <button type="button" id="dupchkBtn" >중복체크</button>
+      <span class="errmsg" id="errmsg_email"></span>
+    </p>
+    <p><input type="password" name="passwd" placeholder="비밀번호"></p>
+    <p><input type="password" placeholder="비밀번호확인"></p>
+    <p><input type="text" name="nickname" placeholder="별칭"></p>
+    <p><button id="joinBtn">가입</button></p>
+  </form>
+  <script>
+
+    frm.addEventListener('submit',evt=>{
+      evt.preventDefault();  //submit 차단
+      //이메일 중복체크 확인
+      if(!email.dataset.dupchk || email.dataset.dupchk == 'ok'){
+        errmsg_email.textContent = '이메일 중복체크 바랍니다!'
+        return;
+      }
+      evt.currentTarget.submit();
+    });
+
+    dupchkBtn.addEventListener('click',evt=>{
+      console.log('중복체크');
+      if(email.value.trim().length == 0){
+        errmsg_email.textContent = '이메일 입력바랍니다.'
+        email.focus();
+        return;
+      }
+      dupchk();
+    });
+
+    async function dupchk(){
+      const $email = document.getElementById('email');
+      const email = {};
+      email['email'] = $email.value;
+
+      const url = `/api/members/dupchk`;
+      const options = {
+        method:'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          accept: 'application/json',
+        },
+        body: JSON.stringify(email)
+      }
+      const response = await fetch(url,options);
+      const msgBody = await response.json();
+      console.log(msgBody);
+      if(msgBody.header.rtcd === '21'){
+        console.log('email exits');
+        errmsg_email.textContent = '존재하는 Email입니다';
+        $email.dataset.dupchk = 'ok'
+        $email.focus();
+      }else{
+        $email.dataset.dupchk = 'nok'
+        $email.readonly = true;
+        $email.style.background = '#eee';
+        dupchkBtn.disabled = true;
+        errmsg_email.textContent = '사용가능한 Email입니다';
+        console.log('email none');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>$Title$</title>
+</head>
+<body>
+<a href="/b?name=gildong&age=20">클릭</a>
+<form action="" method="GET">
+  <input type="text" name=""  th:name="${object}">
+  <input type="text" name="age">
+  <input type="submit" value="submit">  <!--요청메세지 생성 -->
+  <input type="reset" value="reset">   <!--입력값 취소-->
+  <input type="button" value="button">  <!--이벤트(X)-->
+  <button type="submit">버튼1</button>
+  <button type="reset">버튼2</button>
+  <button type="button">버튼3</button>
+</form>
+
+<div>
+  <span>kh<span>울산</span></span>
+  인재교육원
+</div>
+<!--button
+    1. html5에서 등장함 (시멘틱태그)
+    2. form태그 안에서 type의 기본값은 submit
+       form태그 밖에서는 type의 기본값은 button
+-->
+<div><button type="button">버튼4</button></div>
+<script>
+  const $a = document.querySelector('a');
+  $a.addEventListener('click',evt=>{
+    console.log(evt);
+    evt.preventDefault();
+    if(confirm('이동하시겠습니까?')){
+      console.log('이동');
+      location.href = 'http://www.naver.com';
+    }else{
+      console.log('이동취소');
+    }
+  })
+
+
+
+    const url = `https://openapi.naver.com/v1/search/news.json?query=LG화학&display=10&start=1`;
+    const options = {
+      method:'GET',
+      headers:{
+        'X-Naver-Client-Id':'rU1BGqPDYCKpVAtW30FM',
+        'X-Naver-Client-Secret':'cOAsPt0pi2'
+      },
+    };
+   const result = fetch(url,options)
+   result.then(res=>console.log(res));
+
+</script>
+</body>
+</html>

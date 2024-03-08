@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>뉴스검색</title>
+  <style>
+    .active {
+      color: red;
+    }
+    .wrap {
+      display:flex;
+      flex-direction:column;
+      justify-content: center;
+      justify-items: center;
+    }
+    table {
+      width: 100%; /* 테이블 전체 폭을 100%로 설정 */
+      table-layout: fixed; /* 테이블 레이아웃을 고정으로 설정 */
+      border-collapse: collapse;
+      font-family: Arial, sans-serif;
+    }
+    /* 테이블 헤더 스타일 */
+    thead {
+        background-color: #f8f8f8;
+    }
+
+    .col {
+      border: 1px solid #ddd;
+      padding: 5px;
+    }
+
+    .col.col1{
+      width:300px;
+    }
+    .col.col2{
+      width:auto;
+    }
+    .col.col3{
+      width:200px;
+    }
+
+    /* 테이블 헤더 글자 스타일 */
+    th {
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+
+    /* 테이블 본문 글자 스타일 */
+    td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    /* 테이블 본문 줄 스타일 (짝수 줄 배경색) */
+    tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    /* 마지막 테이블 줄 스타일 (하단 경계선 제거) */
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    #pagination {
+      display:flex;
+      justify-content : center;
+      margin: 10px 0;
+      width:100%;
+    }
+  </style>
+</head>
+<body>
+<h3>뉴스검색</h3>
+<div class="wrap">
+<div>
+  <form action="#" method="GET">
+    <label for="search">검색어</label>
+    <input id='search' type="text" name="keyword">
+    <button id="searchBtn" type="button">검색</button>
+  </form>
+</div>
+<div>
+  <p>검색결과</p>
+<!--  제목, 뉴스링크, 요약정보, 작성일 -->
+  <table>
+    <thead>
+      <tr>
+        <th class="col col1">제목</th>
+        <th class="col col2">요약</th>
+        <th class="col col3">작성일</th>
+      </tr>
+    </thead>
+    <tbody>
+<!--      <tr>-->
+<!--        <td>글로벌 수주 '낭보'…이차전지 소재 자리매김 '총력'</td>-->
+<!--        <td>https://www.pinpointnews.co.kr</td>-->
+<!--        <td>LG화학이 배터리 소재 사업을 중심으로 발 빠르게 체질개선에 나서고 있다.</td>-->
+<!--        <td>Tue, 20 Feb 2024 16:02:00 +0900</td>-->
+<!--      </tr>-->
+    </tbody>
+  </table>
+</div>
+<div id="pagination"></div>
+</div>
+<script type="module">
+  import {Pagination,chageDateTime} from '/js/common.js';
+
+  //페이징 객체 생성
+  const pagination = new Pagination(10, 10); // 한페이지에 보여줄 레코드건수,한페이지에 보여줄 페이지수
+
+  search.addEventListener('keydown',evt=>{
+
+    if(evt.key == 'Enter') {
+      event.preventDefault();
+      callNaverApi(1);
+    }
+
+  });
+
+  searchBtn.addEventListener('click',evt=>callNaverApi(1));
+
+  function callNaverApi(){
+    const keyword = search.value;
+    const display = pagination.recordsPerPage;
+    const start = pagination.currentPage;
+    
+    const url = `/pubdata/news/search?keyword=${keyword}&start=${start}&display=${display}`;
+    const option = {
+      method : 'GET',
+    };
+    fetch(url,option)
+      .then(res=>{
+        if(!res.ok) {
+          throw new Error('응답오류발생');
+        }
+        return res.json();   //응답메시지 바디를 읽어서 json포맷문자열=>js객체로 변환
+      })
+      //.then(res=>makeHtml(res))
+      .then(makeHtml)
+      .catch(error=>console.error('오류 : ',error));
+  }
+
+  function makeHtml(res){
+    const $tbody = document.querySelector('tbody');
+    let html = '';
+    res.items.forEach(article=>{
+       html += `<tr class='row'>
+                  <td><a href='${article.originallink}' target='blank'>${article.title}</a></td>
+                  <td>${article.description}</td>
+                  <td>${chageDateTime(article.pubDate)}</td>
+                 </tr>`;
+    });
+    $tbody.innerHTML = html;
+    //총건수는 초기 1회만
+    if(!pagination.getTotalRecords()) pagination.setTotalRecords(res.total);
+    pagination.displayPagination(callNaverApi);
+  }
+</script>
+</body>
+</html>

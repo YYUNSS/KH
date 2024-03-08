@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상품조회</title>
+  <style>
+    #delModal::backdrop {
+      background-color: rgba(0,0,255,0.1);
+    }
+    #delModal {
+      border:none;
+      outline:none;
+      border-radius : 5%;
+      background-color: rgba(0,0,255,0.5);
+      box-shadow: 5px 5px 2px 1px rgba(0, 0, 255, .2);
+    }
+  </style>
+</head>
+<body>
+<h3>상품조회</h3>
+<form action="#" method="post">
+  <div><label for="productId">상품번호</label><input id="productId" type="text" th:value="${product.productId}" readonly></div>
+  <div><label for="pname">상품명</label><input id="pname" name="pname" type="text" th:value="${product.pname}" readonly></div>
+  <div><label for="quantity">수량</label><input id="quantity" name="quantity" type="text" th:value="${product.quantity}" readonly></div>
+  <div><label for="price">가격</label><input id="price" name="price" type="text" th:value="${product.price}" readonly></div>
+  <div>
+    <input id="modifyBtn" type="button" value="수정">
+    <input id="deleteBtn" type="button" value="삭제">
+    <input id="listBtn" type="button" value="목록">
+  </div>
+</form>
+<dialog id="delModal">
+  <p>삭제하시겠습니까?</p>
+  <form action="" method="dialog">
+    <button id="cancelBtn">취소</button>
+    <button id="delItemBtn">삭제</button>
+  </form>
+</dialog>
+<script>
+  const $modifyBtn = document.getElementById('modifyBtn');  //수정버튼
+  const $deleteBtn = document.getElementById('deleteBtn');  //삭제버튼
+  const $listBtn = document.getElementById('listBtn');      //목록버튼
+  const pid = document.getElementById('productId').value;   //상품번호
+
+  //수정
+  $modifyBtn.addEventListener('click',e=>{
+    location.href=`/products/${pid}/edit`; // GET http://서버주소 or 서버도메인/products/상품번호/edit
+  });
+
+  //삭제
+  $deleteBtn.addEventListener('click',e=>{
+    // if(!window.confirm('삭제하시겠습니까')) return;
+    $delModal.showModal();
+
+  });
+
+  //목록
+  $listBtn.addEventListener('click',e=>{
+    location.href = '/products';      // GET http://서버주소 or 서버도메인/products
+  }, false);
+
+  /* 모달창 ---------------------------------------------*/
+  const $delModal = document.getElementById('delModal');    //삭제 모달창
+  const $cancelBtn = document.getElementById('cancelBtn');   //취소버튼 모달창   
+  const $delItemBtn = document.getElementById('delItemBtn'); //삭제버튼 모달창
+
+  $delModal.addEventListener('close',evt=>{
+    if($delModal.returnValue == 'ok'){
+      location.href = `/products/${pid}/del`; // GET http://서버주소 or 서버도메인/products/상품번호/del
+    }
+  });
+
+  //취소버튼 모달창
+  $cancelBtn.addEventListener('click', evt=>{
+    $delModal.close('cancel'); 
+  });
+
+  //삭제버튼 모달창
+  $delItemBtn.addEventListener('click', evt=>{
+    $delModal.close('ok');     
+  });  
+  /*-----------------------------------------------------*/
+</script>
+</body>
+</html>

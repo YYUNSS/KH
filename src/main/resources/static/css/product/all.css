@@ -1,0 +1,21 @@
+@charset "utf-8";
+* {outline:1px solid red;}
+.row:hover {
+   background-color : yellow;
+}
+#pagination button {
+    color : white;
+    background : blue;
+    border: none;
+    outline: none;
+    border-radius : 50%;
+    font-weight : bold;
+}
+#pagination button:hover{
+    cursor: pointer;
+    color : white;
+    background : pink;
+}
+#pagination button.active {
+    background : red;
+}

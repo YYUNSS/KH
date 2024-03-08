@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상품목록</title>
+  <link rel="stylesheet" href="/css/product/all.css">
+ <!--async : html dom트리 형성후 수행됨  -->
+  <script src="/js/product/all.js" async></script>
+</head>
+<body>
+<h3>상품목록</h3>
+
+<form id="frm" action="/products/del" method="POST">
+  <div>
+    <table>
+      <thead>
+        <tr>
+          <td id="selectAll">전체</td>
+          <td>상품번호</td>
+          <td>상품명</td>
+        </tr>
+      </thead>
+      <tbody id="rows">
+        <tr class="row" th:each="product :${list}"  th:data-product-id="${product.productId}">
+          <td class="chk"><input type="checkbox" name="pids" th:value="${product.productId}"></td>
+          <td th:text="${product.productId}"></td>
+          <!--/*  <td><a th:href="|products/${product.productId}/detail|" th:text="${product.pname}"></a></td> */-->
+          <!--/* <td><a th:href="@{/products/{productId}/detail(productId=${product.productId})}" th:text="${product.pname}"></a></td> */-->
+          <td th:text="${product.pname}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <button type="submit" id="delBtn">삭제</button>
+    <button type="button" id="addBtn">등록</button>
+  </div>
+</form>
+
+</body>
+</html>

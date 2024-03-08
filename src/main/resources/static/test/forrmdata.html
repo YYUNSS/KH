@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <form id='frm' action="">
+    <input type="text" name="email" value="test@gamil.com">
+    <input type="text" name="nickname" value="tester">
+  </form>
+  <script>
+    const formData = new FormData(frm);
+    console.log(formData);
+    console.log(formData.get('email'));
+    console.log(formData.get('nickname'));
+    for(let ele of formData.keys()) console.log(ele);
+    for(let ele of formData.values()) console.log(ele);
+    for(let ele of formData.entries()) console.log(ele[0],ele[1]);
+  </script>
+</body>
+</html>

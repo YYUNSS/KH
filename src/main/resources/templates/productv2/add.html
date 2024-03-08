@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="#{title.product.add}">상품등록</title>
+  <style>
+    input::placeholder {
+      color:red;
+      font-size:0.8em;
+      font-style: italic;
+    }
+    .err-msg {
+      display:none;
+      color:red;
+      font-size:0.8em;
+      font-style: italic;
+    }
+    .err-msg.on{
+      display:inline-block;
+    }
+  </style>
+</head>
+<body>
+  <h3  th:text="#{title.product.add}">상품등록1111111111111</h3>
+  <form id='frm' action="/products/add" method="post" th:object="${addForm}">
+    <div><span class="err-msg" id="errGlobal"></span></div>
+    <div th:if="${s_err_global !=null and #strings.length(s_err_global) > 0}" ><span class="err-msg" th:class="'err-msg on'" th:text="${s_err_global}"></span></div>
+    <div>
+      <label for="pname" th:text="#{label.product.pname}">상품명</label>
+      <input id="pname" name="pname" type="text" placeholder="영문/숫자/한글/_-가능" th:value="*{pname}">
+      <span class="err-msg" id="errPname">11</span>
+      <span class="err-msg" th:if="${s_err_pname != ''}" th:class="'err-msg on'" th:text="${s_err_pname}"></span>
+    </div>
+    <div>
+      <label for="quantity" th:text="#{label.product.quantity}">수량</label>
+      <input id="quantity" name="quantity" type="text" placeholder="숫자0~9사이 입력가능 1~10자리" th:value="*{quantity}">
+      <span class="err-msg" id="errQuantity">22</span>
+      <span class="err-msg" th:if="${s_err_quantity != ''}" th:class="'err-msg on'" th:text="${s_err_quantity}"></span>
+    </div>
+    <div><label for="price" th:text="#{label.product.price}">가격</label>
+      <input id="price" name="price" type="text" placeholder="숫자0~9사이 입력가능 1~10자리" th:value="*{price}">
+      <span class="err-msg" id="errPrice">33</span>
+      <span class="err-msg" th:if="${s_err_price != ''}" th:class="'err-msg on'" th:text="${s_err_price}"></span>
+    </div>
+    <div>
+      <input type="reset" value="취소" th:value="#{button.cancel}">
+      <input type="submit" value="저장" th:value="#{button.save}">
+      <input type="button" value="목록" th:value="#{button.list}" onclick="location.href='/products'">
+    </div>
+  </form>
+  <script>
+/*
+    //1) 필드 레벨의 유효성 체크
+    pname.addEventListener('focus',evt=>{
+      evt.target.style.backgroundColor = 'yellow';
+    });
+
+    pname.addEventListener('blur',evt=>{
+      evt.target.style.backgroundColor = 'initial';
+      //유효성 체크
+      console.log(evt.target.value);
+      const pattern = /[a-zA-Z0-9ㄱ-ㅎ가-힣_\-]{3,10}/;
+      if(pattern.test(evt.target.value)){
+        errPname.classList.remove('on');
+        errPname.textContent = '';
+      }else{
+        errPname.classList.add('on');
+        errPname.textContent = '영문/숫자/한글/_-가능, 3~10자리';
+        evt.target.focus();
+        evt.target.select();
+      }
+    });
+    quantity.addEventListener('blur',evt=>{
+      evt.target.style.backgroundColor = 'initial';
+      //유효성 체크
+      console.log(evt.target.value);
+      const pattern = /[0-9]{1,10}/;
+      if(pattern.test(evt.target.value)){
+        errQuantity.classList.remove('on');
+        errQuantity.textContent = '';
+      }else{
+        errQuantity.classList.add('on');
+        errQuantity.textContent = '숫자0~9사이 입력가능 1~10자리';
+        evt.target.focus();
+        evt.target.select();
+      }
+    });
+    price.addEventListener('blur',evt=>{
+      evt.target.style.backgroundColor = 'initial';
+      //유효성 체크
+      console.log(evt.target.value);
+      const pattern = /[0-9]{1,10}/;
+      if(pattern.test(evt.target.value)){
+        errPrice.classList.remove('on');
+        errPrice.textContent = '';
+      }else{
+        errPrice.classList.add('on');
+        errPrice.textContent = '숫자0~9사이 입력가능 1~10자리';
+        evt.target.focus();
+        evt.target.select();
+      }
+    });
+
+    frm.addEventListener('submit',evt=>{
+      //1)submit이벤트 중지
+      evt.preventDefault();
+      //2)글로벌 오류 체크
+      //상품*수량 > 1000만원 초과유무
+       if(parseInt(quantity.value) * parseInt(price.value) > 10000000){
+          console.log('총액 1000만원 초과');
+          //오류메세지 표시
+          errGlobal.classList.add('on');
+          errGlobal.textContent = '총액 1000만원 초과합니다';
+          return;
+       }else{
+          //오류메시지 클리어
+          errGlobal.classList.remove('on');
+          errGlobal.textContent = '';
+          console.log('총액 1000만원 이하');
+       }
+
+      //3)이상 없을시 submit
+      evt.target.submit();
+    });
+*/
+  </script>
+</body>
+</html>

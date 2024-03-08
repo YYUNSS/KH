@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="#{title.board.add}">새글 작성</title>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    .wrap{
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+    }
+    h3{
+      display: inline-block;
+      font-weight: bolder;
+    }
+    .titleOfBoard{
+      display: flex;
+      text-align: center;
+      justify-content: center;
+    }
+    .frm-wrap{
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+    }
+    .rows-wrap{
+      display: flex;
+      text-align: center;
+      width: 100%;
+    }
+    .label-wrap{
+      padding: 10px;
+      width: 10%;
+    }
+
+    #title, #contents, #writer{
+      width: 500px;
+    }
+    #title, #writer{
+      height: 30px
+    }
+    #contents{
+      height: 300px;
+    }
+    label{
+      display: inline-block;
+      width: 60px;
+    }
+
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="titleOfBoard">
+    <h3 th:text="#{title.board.add}"></h3>
+  </div>
+  <div class="frm-wrap">
+    <form id="frm" action="/boardlist/add" method="post" th:object="${addForm}">
+      <div class="rows-wrap">
+        <div class="labal-wrap">
+          <label for="title">제목</label>
+        </div>
+        <div class="input-wrap">
+          <input id="title" name="title" type="text" placeholder="제목 입력">
+          <span class="err-msg" id="errTitle" th:if="${err_title != null and err_title !=''}" th:class="'err-msg on'" th:text="${err_title}"></span>
+        </div>
+      </div>
+      <div class="rows-wrap">
+        <div class="labal-wrap">
+          <label for="contents">내용</label>
+        </div>
+        <div class="input-wrap">
+          <textarea id="contents" name="contents"placeholder="내용 입력"></textarea>
+          <span class="err-msg" id="errContents" th:if="${err_contents != null and err_contents !=''}" th:class="'err-msg on'" th:text="${err_contents}"></span>
+        </div>
+      </div>
+      <div class="rows-wrap">
+        <div class="labal-wrap">
+          <label for="writer">작성자</label>
+        </div>
+        <div class="input-wrap">
+          <input id="writer" name="writer" type="text" placeholder="작성자 입력">
+          <span class="err-msg" id="errWriter" th:if="${err_writer != null and err_writer !=''}" th:class="'err-msg on'" th:text="${err_writer}"></span>
+        </div>
+      </div>
+      <div class="btn">
+        <input type="reset" value="취소" th:value="#{button.cancel}">
+        <input type="submit" value="저장" th:value="#{button.save}">
+        <input type="button" value="목록" th:value="#{button.list}" onclick="location.href='/boardlist'">
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  frm.addEventListner('submit' , evt=>{
+    evt.target.submit();
+  });
+</script>
+</body>
+</html>
