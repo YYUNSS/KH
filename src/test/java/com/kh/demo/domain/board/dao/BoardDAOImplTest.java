@@ -2,6 +2,7 @@ package com.kh.demo.domain.board.dao;
 
 import com.kh.demo.domain.entity.Board;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,11 @@ public class BoardDAOImplTest {
   }
 
   @Test
+  @DisplayName("단건삭제")
   void deleteById() {
+    Long bid = 3L;
+    int deletedRowCnt = boardDAO.deleteById(bid);
+    Assertions.assertThat(deletedRowCnt).isEqualTo(1);
   }
 
   @Test

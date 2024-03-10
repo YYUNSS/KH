@@ -27,6 +27,7 @@ public class BoardDAOImpl implements BoardDAO{
     this.template = template;
   }
 
+  //게시글 목록
   @Override
   public List<Board> findAll() {
     StringBuffer sql = new StringBuffer();
@@ -36,6 +37,7 @@ public class BoardDAOImpl implements BoardDAO{
     return list;
   }
 
+  //단건 조회
   @Override
   public Optional<Board> findById(Long boardId) {
     StringBuffer sql = new StringBuffer();
@@ -48,7 +50,7 @@ public class BoardDAOImpl implements BoardDAO{
       return Optional.empty();
     }
   }
-//등록
+  //등록
   @Override
   public Long save(Board board) {
     StringBuffer sql = new StringBuffer();
@@ -62,7 +64,7 @@ public class BoardDAOImpl implements BoardDAO{
     return board_id;
   }
 //
-//  //단건 삭제
+//단건 삭제
   @Override
   public int deleteById(Long boardId) {
     StringBuffer sql = new StringBuffer();
@@ -89,6 +91,7 @@ public class BoardDAOImpl implements BoardDAO{
     return deletedRowCnt;
   }
 
+  //수정
   @Override
   public int updateById(Long boardId, Board board) {
     StringBuffer sql = new StringBuffer();

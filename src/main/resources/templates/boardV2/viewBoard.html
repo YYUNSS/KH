@@ -5,6 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title th:text="#{title.board.add}"></title>
+  <script th:inline="javascript">
+    window.totalCnt = [[${totalCnt}]];
+    window.cpgs = [[${cpgs}]];
+    window.cp = [[${cp}]];
+  </script>
+    
   <style>
     *{
       margin : 0;
@@ -23,13 +29,15 @@
       display: flex;
       text-align: center;
       justify-content: center;
+      height: 30px;
+      padding: 5px;
     }
     .frm-wrap{
       display: flex;
       justify-content: center;
       text-align: center;
       width: 100%;
-      height: 450px;
+      height: 380px;
     }
     form{
       width: 700px;
@@ -57,7 +65,7 @@
     }
     input[type="textarea" i] {
     width: 100%;
-    height: 150px;
+    height: 50px;
     }
     .reply-wrap{
       display: flex;
@@ -128,151 +136,6 @@
     </div>
   </form>
 </div>
-<div class="reply-wrap">
-  <div>
-    <textarea name="" id="comment" cols="30" rows="3"></textarea>
-    <button class="addBtn">등록</button>
-    <div id="commentErrMsg"></div>
-    <ul class="list"></ul>
-  </div>
-  <template id="readMode">
-    <li class="item read"><span class="reply"></span>
-      <button class="modifyBtn">수정</button><button class="delBtn">삭제</button>
-    </li>
-  </template>
-  <template id="modifyMode">
-    <li class="item modi">
-      <input type="text"><button class="saveBtn">저장</button><button class="cancelBtn">취소</button>
-    </li>
-  </template>
-  <template id="err">
-    <p class="errmsg"></p>
-  </template>
-  <dialog id="delModal">
-    <p>삭제하시겠습니까?</p>
-    <form action="" method="dialog">
-      <button id="cancelBtn">취소</button>
-      <button id="delItemBtn">삭제</button>
-    </form>
-  </dialog>
-</div>
-<script>
-  const bid = document.getElementById('boardId').value;
-  const $listBtn = document.getElementById("listBtn")
-  $listBtn.addEventListener('click',evt=>{
-    location.href = '/boardlist';
-  })
-
-  const $deleteBtn = document.getElementById('deleteBtn');
-  $deleteBtn.addEventListener('click',evt=>{
-    if(!window.confirm('삭제하시겠습니까?'))
-    return;
-  location.href = `/boardlist/${bid}/del`;
-  })
-
-  const $modifyBtn = document.getElementById('modifyBtn');
-  $modifyBtn.addEventListener('click',evt=>{
-    location.href = `/boardlist/${bid}/edit`;
-  });
-  let replyNumber = 0;
-    //등록
-    document.querySelector('.addBtn').addEventListener('click',evt=>{
-      //1)유효성체크
-      if(comment.value.trim().length < 3) {
-        //alert('3글자 이상 입력바랍니다.');
-       commentErrMsg.textContent = '3글자 이상 입력바랍니다.';
-        return;
-      }else{
-        commentErrMsg.textContent = '';
-      }
-      //
-      const $readeModeLi = readMode.content.cloneNode(true).querySelector('li');
-      //댓글번호
-      $readeModeLi.dataset.replyNumber = ++replyNumber;
-
-      $readeModeLi.querySelector('.reply').textContent = comment.value;
-      document.querySelector('.list').appendChild($readeModeLi);
-      comment.value = '';
-      comment.focus();
-    });
-
-    document.querySelector('.list').addEventListener('click',evt=>{
-      if(evt.target.tagName !== 'BUTTON') return;
-      switch(evt.target.classList[0]){
-        //수정
-        case "modifyBtn" : modify(evt); break;
-        //삭제
-        case "delBtn" : del(evt); break;
-        //저장
-        case "saveBtn" : save(evt); break;
-        //취소
-        case "cancelBtn" : cancel(evt); break;
-      }
-    });
-
-    function modify(e){
-      console.log('수정');
-      //1) 수정모드 li를 찾아서 취소버튼 클릭
-      document.querySelector('.list li.modi')?.querySelector('.cancelBtn').click();
-      //2)
-      const $readModeLi = e.target.closest('li');
-      const $modifyModeLi = modifyMode.content.cloneNode(true).querySelector('li');
-      $modifyModeLi.dataset.replyNumber =  $readModeLi.dataset.replyNumber;
-
-      $modifyModeLi.querySelector('input').value = $readModeLi.querySelector('.reply').textContent;
-      //댓글 초기값을 사용자정의 속성을 생성해 저장해둔다.
-      $modifyModeLi.querySelector('input').dataset.oldText = $readModeLi.querySelector('.reply').textContent;
-      $readModeLi.replaceWith($modifyModeLi);
-    }
-    function del(e){
-      console.log('삭제');
-      $delModal.showModal();
-      $delModal.dataset.replyNumber = e.target.closest('li').dataset.replyNumber;
-      // e.target.closest('li').remove();
-    }
-    function save(e){
-      console.log('저장');
-      const $readModeLi = readMode.content.cloneNode(true).querySelector('li');
-      const $modifyModeLi = e.target.closest('li');
-      $readModeLi.dataset.replyNumber = $modifyModeLi.dataset.replyNumber;
-
-      $readModeLi.querySelector('.reply').textContent =  $modifyModeLi.querySelector('input').value;
-      $modifyModeLi.replaceWith($readModeLi);
-    }
-    function cancel(e){
-      console.log('취소');
-      const $readModeLi = readMode.content.cloneNode(true).querySelector('li');
-      const $modifyModeLi = e.target.closest('li');
-      $readModeLi.dataset.replyNumber = $modifyModeLi.dataset.replyNumber;
-
-      //댓글 초기값을 사용자정의 속성을 읽어온다.
-      $readModeLi.querySelector('.reply').textContent =  $modifyModeLi.querySelector('input').dataset.oldText;
-      $modifyModeLi.replaceWith($readModeLi);
-    }
-
-    /* 모달창 ---------------------------------------------*/
-    const $delModal = document.getElementById('delModal');    //삭제 모달창
-    const $cancelBtn = document.getElementById('cancelBtn');   //취소버튼 모달창
-    const $delItemBtn = document.getElementById('delItemBtn'); //삭제버튼 모달창
-
-    $delModal.addEventListener('close',evt=>{
-      if($delModal.returnValue == 'ok'){
-        const replyNumber = evt.currentTarget.dataset.replyNumber;
-        const $lis = document.querySelectorAll('.list .item');
-        const findedIdx = Array.from($lis).findIndex(li=>li.dataset.replyNumber == replyNumber);
-        $lis[findedIdx].remove();
-      }
-    });
-
-    //취소버튼 모달창
-    $cancelBtn.addEventListener('click', evt=>{
-      $delModal.close('cancel');
-    });
-
-    //삭제버튼 모달창
-    $delItemBtn.addEventListener('click', evt=>{
-      $delModal.close('ok');
-    });
-</script>
+<script type="module" src="/js/reply/reply.js"></script>
 </body>
 </html>
