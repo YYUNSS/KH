@@ -40,7 +40,7 @@ public class ReplyDAOImpl implements ReplyDAO {
   @Override
   public List<Reply> findByBoardId(Long boardId,Long reqPage, Long recCnt) {
     StringBuffer sql = new StringBuffer();
-    sql.append(" select reply_writer_email, reply_writer_nickname,reply_contents ");
+    sql.append(" select reply_id, board_id, reply_writer_id, reply_writer_email, reply_writer_nickname,reply_contents,cdate,udate ");
     sql.append(" from reply ");
     sql.append(" where board_id = :boardId ");
     sql.append(" order by cdate desc ");

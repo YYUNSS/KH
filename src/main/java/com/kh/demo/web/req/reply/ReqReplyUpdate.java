@@ -5,5 +5,4 @@ import lombok.Data;
 @Data
 public class ReqReplyUpdate {
   private String replyContents;
-  private Long replyId;
 }

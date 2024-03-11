@@ -1,48 +1,54 @@
 <!DOCTYPE html>
-<html lang="ko"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title th:text="#{title.board.add}"></title>
   <script th:inline="javascript">
-    window.totalCnt = [[${totalCnt}]];
-    window.cpgs = [[${cpgs}]];
-    window.cp = [[${cp}]];
+    window.totalCnt = [[${ totalCnt }]];
+    window.cpgs = [[${ cpgs }]];
+    window.cp = [[${ cp }]];
   </script>
-    
+
   <style>
-    *{
-      margin : 0;
-      padding : 0;
+    * {
+      margin: 0;
+      padding: 0;
     }
-    .wrap{
+
+    .wrap {
       display: flex;
       flex-direction: column;
       text-align: center;
     }
-    h3{
+
+    h3 {
       display: inline-block;
       font-weight: bolder;
     }
-    .titleOfBoard{
+
+    .titleOfBoard {
       display: flex;
       text-align: center;
       justify-content: center;
       height: 30px;
       padding: 5px;
     }
-    .frm-wrap{
+
+    .frm-wrap {
       display: flex;
       justify-content: center;
       text-align: center;
       width: 100%;
       height: 380px;
     }
-    form{
+
+    form {
       width: 700px;
     }
-    .row-wrap{
+
+    .row-wrap {
       display: flex;
       flex-direction: row;
       justify-content: center;
@@ -50,92 +56,125 @@
       width: 100%;
       outline: 1px solid rgb(105, 104, 104);
     }
-    .label-wrap{
+
+    .label-wrap {
       padding: 10px;
       width: 20%;
       background-color: #727272;
     }
-    .input-wrap{
+
+    .input-wrap {
       padding: 10px;
       width: 80%;
     }
+
     input[type="text" i] {
-    width: 100%;
-    height: 20px;
+      width: 50%;
+      height: 20px;
     }
+
     input[type="textarea" i] {
-    width: 100%;
-    height: 50px;
+      width: 100%;
+      height: 50px;
     }
-    .reply-wrap{
+
+    .reply-wrap {
       display: flex;
       justify-content: center;
     }
+
+    .replyList-wrap {
+      position:relative;
+    }
+    
+    #loadding {
+      position : 'absolute';
+      top : '50vh';
+      left : '50vw';
+      transform : 'translate(-50%,-50%)';
+      display : 'none';    
+    }
   </style>
 </head>
+
 <body>
-<div class="wrap">
-  <div class="titleOfBoard">
-    <h3 th:text="#{title.board.detail}"></h3>
-  </div>
-  <div class="frm-wrap">
-    <form action="#" method="post">
-      <div class="row-wrap">
-        <div class="label-wrap">
-          <label for="boardId" th:text="#{label.board.boardId}"></label>
-        </div>
-        <div class="input-wrap">
-          <input id="boardId" type="text" th:value="${board.boardId}" readonly>
-        </div>
-      </div>
-      <div class="row-wrap">
-        <div class="label-wrap">
-          <label for="boardTitle" th:text="#{label.board.title}"></label>
-        </div>
-        <div class="input-wrap">
-          <input id="boardTitle" type="text" th:value="${board.boardTitle}" readonly>
-        </div>
-      </div>
-      <div class="row-wrap">
-        <div class="label-wrap">
-          <label for="boardContents" th:text="#{label.board.contents}"></label>
-        </div>
-        <div class="input-wrap">
-          <input type="textarea" id="boardContents" th:value="${board.boardContents}" readonly>
-        </div>
-      </div>
-      <div class="row-wrap">
-        <div class="label-wrap">
-          <label for="boardWriterNickname" th:text="#{label.board.writer}"></label>
-        </div>
-        <div class="input-wrap">
-          <input id="boardWriterNickname" type="text" th:value="${board.boardWriterNickname}" readonly>
-        </div>
-      </div>
-      <div class="row-wrap">
-        <div class="label-wrap">
-          <label for="cdate" th:text="#{label.board.cdate}"></label>
-        </div>
-        <div class="input-wrap">
-          <input id="cdate" type="text" th:value="${#temporals.format(board.cdate,'yyyy년 MM월 dd일')}" readonly>
-        </div>
-      </div>
-      <div class="row-wrap">
-        <div class="label-wrap">
-          <label for="udate" th:text="#{label.board.udate}"></label>
-        </div>
-        <div class="input-wrap">
-          <input id="udate" type="text" th:value="${#temporals.format(board.udate,'yyyy년 MM월 dd일')}" readonly>
-        </div>
-      </div>
-      <div class="btn">
-        <input id="modifyBtn" type="button" value="수정">
-        <input id="deleteBtn" type="button" value="삭제">
-        <input id="listBtn" type="button" value="목록">
-      </div>
+  <div class="wrap">
+    <div class="titleOfBoard">
+      <h3 th:text="#{title.board.detail}"></h3>
     </div>
-  </form>
-</div>
-<script type="module" src="/js/reply/reply.js"></script>
+    <div class="frm-wrap">
+      <form action="#" method="post">
+        <div class="row-wrap">
+          <div class="label-wrap">
+            <label for="boardId" th:text="#{label.board.boardId}"></label>
+          </div>
+          <div class="input-wrap">
+            <input id="boardId" type="text" name="boardId" th:value="${board.boardId}" readonly>
+          </div>
+        </div>
+        <div class="row-wrap">
+          <div class="label-wrap">
+            <label for="boardTitle" th:text="#{label.board.title}"></label>
+          </div>
+          <div class="input-wrap">
+            <input id="boardTitle" type="text" th:value="${board.boardTitle}" readonly>
+          </div>
+        </div>
+        <div class="row-wrap">
+          <div class="label-wrap">
+            <label for="boardContents" th:text="#{label.board.contents}"></label>
+          </div>
+          <div class="input-wrap">
+            <input type="textarea" id="boardContents" th:value="${board.boardContents}" readonly>
+          </div>
+        </div>
+        <div class="row-wrap">
+          <div class="label-wrap">
+            <label for="boardWriterNickname" th:text="#{label.board.writer}"></label>
+          </div>
+          <div class="input-wrap">
+            <input id="boardWriterNickname" type="text" th:value="${board.boardWriterNickname}" readonly>
+          </div>
+        </div>
+        <div class="row-wrap">
+          <div class="label-wrap">
+            <label for="cdate" th:text="#{label.board.cdate}"></label>
+          </div>
+          <div class="input-wrap">
+            <input id="cdate" type="text" th:value="${#temporals.format(board.cdate,'yyyy년 MM월 dd일')}" readonly>
+          </div>
+        </div>
+        <div class="row-wrap">
+          <div class="label-wrap">
+            <label for="udate" th:text="#{label.board.udate}"></label>
+          </div>
+          <div class="input-wrap">
+            <input id="udate" type="text" th:value="${#temporals.format(board.udate,'yyyy년 MM월 dd일')}" readonly>
+          </div>
+        </div>
+        <div class="btn">
+          <input id="modifyBtn" type="button" value="수정">
+          <input id="deleteBtn" type="button" value="삭제">
+          <input id="listBtn" type="button" value="목록">
+        </div>
+      </form>
+    </div>
+    <div class="replyFrm-wrap">
+      <form id="replyFrm">
+        <h3>댓글</h3>
+        <textarea name="replyContents" id="replyContents" cols="30" rows="3"></textarea>
+        <div id="commentErrMsg"></div>
+        <button id='replyAddBtn'type='submit'>등록</button><button type="reset">초기화</button>
+      </form>
+    </div>
+    <div class="replyList-wrap">
+      <div id='replyList'></div>
+      <img id='loadding' src='/img/loadding.svg' width="100">
+    </div>
+    <div id='pagination'></div>
+    
+  </div>
+  <script type="module" src="/js/reply/reply.js"></script>
 </body>
+
 </html>

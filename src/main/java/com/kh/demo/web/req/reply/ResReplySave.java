@@ -9,4 +9,7 @@ public class ResReplySave {
   private Long replyId;
   private Long boardId;
   private String replyContents;
+  private Long replywriterId;
+  private String replyWriterEmail;
+  private String replyWriterNickname;
 }
