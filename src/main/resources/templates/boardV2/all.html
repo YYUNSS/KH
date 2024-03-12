@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title th:text="#{title.board.list}">게시판 목록</title>
-  <script type="module" src="/js/board/boardlist.js"></script>
   <style>
     *{
       margin: 0;
@@ -15,9 +14,9 @@
       display: flex;
       text-align: center;
       justify-content: center;
+      height: 50px;
     }
     h3{
-      display: inline-block;
       font-weight: bolder;
     }
     table{
@@ -33,6 +32,19 @@
       border-bottom: 1px solid #d3d3d3;
       padding: 10px;
     }
+    .button-wrap button{
+      background-color: #f0f0f0;
+      color: #333;
+      border: 1px solid #ccc;
+      padding: 10px 20px;
+      border-radius: 5px; 
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+    }
+    .button-wrap button:hover{
+      background-color: #e0e0e0;
+    }
     .button-wrap{
       display: flex;
       justify-content: center;
@@ -47,6 +59,7 @@
 <div class="wrap">
   <div class="head-wrap">
     <h3 th:text="#{title.board.list}"></h3>
+    <div class="nickname-wrap"><span th:text="${session.loginMember.nickname}"></span><span>님</span></div>
   </div>
   <div class="frm-wrap">
     <form id="frm" action="/boardlist/del" method="POST">
