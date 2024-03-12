@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title th:text="#{title.board.add}"></title>
+  <title th:text="#{title.board.detail}"></title>
   <script th:inline="javascript">
     window.totalCnt = [[${ totalCnt }]];
     window.cpgs = [[${ cpgs }]];
@@ -73,26 +73,21 @@
       height: 20px;
     }
 
-    input[type="textarea" i] {
-      width: 100%;
-      height: 50px;
-    }
-
     .reply-wrap {
       display: flex;
       justify-content: center;
     }
 
     .replyList-wrap {
-      position:relative;
+      position: relative;
     }
-    
+
     #loadding {
-      position : 'absolute';
-      top : '50vh';
-      left : '50vw';
-      transform : 'translate(-50%,-50%)';
-      display : 'none';    
+      position: 'absolute';
+      top: '50vh';
+      left: '50vw';
+      transform: 'translate(-50%,-50%)';
+      display: 'none';
     }
   </style>
 </head>
@@ -101,6 +96,7 @@
   <div class="wrap">
     <div class="titleOfBoard">
       <h3 th:text="#{title.board.detail}"></h3>
+      <h6 th:text="${session.loginMember.nickname}"></h6><span>님</span>
     </div>
     <div class="frm-wrap">
       <form action="#" method="post">
@@ -133,6 +129,7 @@
             <label for="boardWriterNickname" th:text="#{label.board.writer}"></label>
           </div>
           <div class="input-wrap">
+            <input id="boardWriterId" type="hidden" th:value="${board.boardWriterId}">
             <input id="boardWriterNickname" type="text" th:value="${board.boardWriterNickname}" readonly>
           </div>
         </div>
@@ -157,14 +154,15 @@
           <input id="deleteBtn" type="button" value="삭제">
           <input id="listBtn" type="button" value="목록">
         </div>
+        <div id="commentErrMsg"></div>
       </form>
     </div>
     <div class="replyFrm-wrap">
       <form id="replyFrm">
         <h3>댓글</h3>
+        <input type="hidden" id="memberId" name="memberId" th:value="${session.loginMember.memberId}"></input>
         <textarea name="replyContents" id="replyContents" cols="30" rows="3"></textarea>
-        <div id="commentErrMsg"></div>
-        <button id='replyAddBtn'type='submit'>등록</button><button type="reset">초기화</button>
+        <button id='replyAddBtn' type='submit'>등록</button><button type="reset">초기화</button>
       </form>
     </div>
     <div class="replyList-wrap">
@@ -172,7 +170,6 @@
       <img id='loadding' src='/img/loadding.svg' width="100">
     </div>
     <div id='pagination'></div>
-    
   </div>
   <script type="module" src="/js/reply/reply.js"></script>
 </body>

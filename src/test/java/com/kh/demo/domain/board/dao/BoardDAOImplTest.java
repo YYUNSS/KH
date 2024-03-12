@@ -55,4 +55,19 @@ public class BoardDAOImplTest {
 
     Long boardId = boardDAO.save(board);
   }
+  @Test
+  @DisplayName("게시글 여러건 등록")
+  void saveMultipleReplies() {
+    long start = 1;
+    long end = 120;
+    for(long i=start; i<=end; i++) {
+      Board board = new Board();
+      board.setBoardWriterId(2L);
+      board.setBoardWriterNickname("사용자2");
+      board.setBoardWriterEmail("user2@kh.com");
+      board.setBoardContents("게시글"+i);
+      board.setBoardTitle("게시글제목"+i);
+      Long boardId = boardDAO.save(board);
+    }
+  }
 }

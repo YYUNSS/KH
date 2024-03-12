@@ -9,16 +9,26 @@ const $listBtn = document.getElementById("listBtn")
 $listBtn.addEventListener('click', evt => {
   location.href = '/boardlist';
 })
+const memberId = document.getElementById('memberId').value;
+const boardWriterId = document.getElementById('boardWriterId').value;
 //게시물 삭제 버튼
 const $deleteBtn = document.getElementById('deleteBtn');
 $deleteBtn.addEventListener('click', evt => {
   if (!window.confirm('삭제하시겠습니까?'))
     return;
+  if (memberId != boardWriterId){
+    commentErrMsg.textContent = '게시글 작성자만 수정/삭제 가능';
+    return
+  }
   location.href = `/boardlist/${boardId}/del`;
 })
 //게시물 수정 버튼
 const $modifyBtn = document.getElementById('modifyBtn');
 $modifyBtn.addEventListener('click', evt => {
+  if (memberId != boardWriterId){
+    commentErrMsg.textContent = '게시글 작성자만 수정/삭제 가능';
+    return
+  }
   location.href = `/boardlist/${boardId}/edit`;
 });
 
@@ -95,16 +105,19 @@ async function findByBoardId(boardId) {
           <ul>
             <li class="listrow" >
               <input type="hidden" name="rid" id="rid" value="${item.replyId}">
+              <input type="hidden" name="replyWriterId" id="replyWriterId" value="${item.replyWriterId}">
               <span id="replyContents">${item.replyContents}</span>
               <span id="replyWriterNickname">${item.replyWriterNickname}</span>
               <span id="cdate">${item.cdate}</span>    
               <button class="replyModiBtn">수정</button>
               <button class="replyDelBtn">삭제</button>
+              <span id="replyErrMsg"></span>
             </li>
           </ul>
         </div>`).join('');
 
       replyList.innerHTML = str;
+
       pagination.setTotalRecords(result.totalCnt);
       pagination.displayPagination(findByBoardId);
 
@@ -125,15 +138,34 @@ async function findByBoardId(boardId) {
   if (evt.target.classList.contains('replyDelBtn')) {
     const currLi = evt.target.closest('.listrow'); 
     if (!currLi) return;
+    //댓글 유효성 검사(댓글 작성자=댓글 삭제자 여부)
+    const loginMemberId = document.getElementById('memberId').value;
+    const replyWriterId = currLi.querySelector('#replyWriterId').value;
+    if(loginMemberId != replyWriterId){
+      console.log('댓글 작성자가 아님')
+      const replyErrMsg = currLi.querySelector('#replyErrMsg');
+      replyErrMsg.textContent = '해당 댓글 작성자만 수정/삭제 가능'
+      return;
+    }
     const replyId = currLi.querySelector('#rid').value; // 리스트 요소 내의 숨겨진 input에서 replyId를 가져옵니다.
     del(replyId);
 
 
-  //댓글 수정
+  //댓글 수정 버튼
   } else if(evt.target.classList.contains('replyModiBtn')){
     const currLi = evt.target.closest('.listrow'); 
     if (!currLi) return;
-    
+    const loginMemberId = document.getElementById('memberId').value;
+    console.log(loginMemberId)
+    const replyWriterId = currLi.querySelector('#replyWriterId').value;
+    console.log(replyWriterId);
+    //댓글 유효성 검사(댓글 작성자=댓글 수정자 여부)
+    if(loginMemberId != replyWriterId){
+      console.log('댓글 작성자가 아님')
+      const replyErrMsg = currLi.querySelector('#replyErrMsg');
+      replyErrMsg.textContent = '해당 댓글 작성자만 수정/삭제 가능'
+      return;
+    };
     const replyContentsSpan = currLi.querySelector('#replyContents');
     const cdateSpan = currLi.querySelector('#cdate');
     const replyContentsValue = replyContentsSpan.textContent;
@@ -141,18 +173,17 @@ async function findByBoardId(boardId) {
     const input = document.createElement('input');
     input.setAttribute('type', 'text');
     input.setAttribute('value', replyContentsValue);
+    input.setAttribute('id','newReply');
     //replyContentsSpan을 input으로 교체
     currLi.replaceChild(input, replyContentsSpan);
     //작성일자 안보이게
     currLi.removeChild(cdateSpan);
-
     // 수정 버튼 -> 저장 대체
     const modifyBtn = currLi.querySelector('.replyModiBtn');
     const saveBtn = document.createElement('button');
     saveBtn.textContent = '저장';
     saveBtn.classList.add('modiSaveBtn');
     modifyBtn.parentNode.replaceChild(saveBtn, modifyBtn);
-
     // 삭제 - 취소 버튼 대체
     const deleteBtn = currLi.querySelector('.replyDelBtn');
     const cancelBtn = document.createElement('button');
@@ -160,42 +191,59 @@ async function findByBoardId(boardId) {
     cancelBtn.classList.add('modiCancelBtn');
     deleteBtn.parentNode.replaceChild(cancelBtn, deleteBtn);
 
-    //수정-저장 버튼 누르면(update 실행)
-    
     //수정-취소 버튼 누르면(이전으로 되돌리기)
     const replyId = currLi.querySelector('#rid').value; 
     cancelBtn.addEventListener('click',evt=>{
-      //input-> 다시 span으로 
-
-      //저장버튼을 수정버튼으로 
-
-      //취소버튼을 삭제버튼으로
-
-      
-      // update(replyId);
+      //댓글 내용 input->span으로
+      currLi.replaceChild(replyContentsSpan, input);
+      //저장,취소버튼 제거
+      currLi.removeChild(saveBtn);
+      currLi.removeChild(cancelBtn);
+      //작성일자 다시 보이게
+      currLi.appendChild(cdateSpan);
+      //수정,삭제 버튼으로
+      currLi.appendChild(modifyBtn);
+      currLi.appendChild(deleteBtn);
     });
     
-
+    //수정-저장 버튼 누르면(update 실행)
+    saveBtn.addEventListener('click',evt=>{
+      const newContents = document.getElementById('newReply').value;
+      const reply = {
+        replyContents : newContents
+      }
+      update(replyId,reply)
+    });
   }
   })
-
-
   }
 
 //수정
-async function update(rid) {
+async function update(rid,reply) {
   console.log('수정');
-
-
-  //replyContents 추가해야
+  const payload = reply
   const url = `http://localhost:9080/reply/${rid}`;
   const option = {
     method: 'PATCH',
     headers: {
-      accept: 'application/json'
+      'Content-Type': 'application/json',  // 요청메세지 바디의 데이터포맷 타입
+      accept: 'application/json',          // 응답메세지 바다의 데이터포맷 타입
+    },
+    body: JSON.stringify(payload), // js객체=>json포맷 문자열
+  };
+  try {
+    const res = await fetch(url, option);
+    if (!res.ok) return new Error('서버응답오류');
+    const result = await res.json(); //응답메세지 바디를 읽어 json포맷 문자열=>js객체
+    if (result.header.rtcd == '00') {
+      console.log(result.body);
+      findByBoardId(boardId);
+    } else {
+      new Error('수정 실패!');
     }
+  } catch (err) {
+    console.error(err.message);
   }
-
 }
 
 

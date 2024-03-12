@@ -98,9 +98,9 @@ public class ReplyController {
   }
 
   //수정
-  @PatchMapping("/{rid}")
+  @PatchMapping("/{replyId}")
   public ApiResponse<?> update(
-          @PathVariable("rid") Long replyId,
+          @PathVariable("replyId") Long replyId,
           @RequestBody ReqReplyUpdate reqReplyUpdate,
           HttpServletRequest request) {
     LoginMember loginMember = (LoginMember) request.getSession().getAttribute(SessionConst.LOGIN_MEMBER);
